@@ -80,5 +80,16 @@
       line: "JENKINS_HOME=\"{{ jenkins_home }}\""
     - regexp: '^JENKINS_ARGS='
       line: "JENKINS_ARGS=\"--prefix={{ jenkins_context_path }}\""
-  notify:
-    - "Restart Service 'jenkins'"
+  # notify:
+  #   - "Restart Service 'jenkins'"
+
+- name: checking service status
+  command: systemctl status "{{ item }}"
+  with_items:
+  - jenkins
+  register: result
+  ignore_errors: no
+
+- name: showing report
+  debug:
+    var: result

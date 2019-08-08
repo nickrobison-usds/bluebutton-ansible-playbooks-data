@@ -25,7 +25,7 @@
 
     # The `/u01` directory is on a separate, larger volume.
     # TODO: Switch to EBS Volume - JZ /u01/jenkins
-    jenkins_home: '/var/lib/jenkins'
+    jenkins_home: '/jenkins'
 
 
     # We host Jenkins at a non-root context, to allow for hosting other
