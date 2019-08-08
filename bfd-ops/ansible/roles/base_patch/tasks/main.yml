@@ -1,22 +1,17 @@
 ---
-- name: Disable boot-time yum update
-  become: yes
-  lineinfile:
-    dest: /etc/cloud/cloud.cfg
-    state: absent
-    regexp: '^.*yum\s-y\supdate.*$'
-
-- name: Apply security patches
-  become: yes
-  shell: yum update-minimal --security -y
+# - name: Apply security patches
+#   become: yes
+#   shell: yum update-minimal --security -y
 
 - name: Add optional RHEL repo
   become: yes
   command: yum-config-manager --enable rhel-7-server-optional-rpms
 
-- name: Install ntp
-  command: yum install ntp
+- name: install the latest version of Apache
   become: yes
+  yum:
+    name: ntp
+    state: latest
 
 - name: Add amazon ntp server to ntp.conf
   lineinfile:

@@ -11,11 +11,6 @@
     state: present
   become: true
 
-- name: Create cert dir
-  file:
-    path: /etc/pki/tls/certs/
-    state: directory
-
 - name: Apache Self Sign SSL Key - Copy from Vault
   copy:
     dest: "/etc/pki/tls/private/{{ item.dest_name }}"
