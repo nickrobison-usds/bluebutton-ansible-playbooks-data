@@ -27,7 +27,8 @@
   ],
   "provisioners": [{
       "type": "ansible",
-      "playbook_file": "playbooks/build_jenkins_ccs.yml",
+      "command": "ansible-playbook-wrapper",
+      "playbook_file": "jenkins.yml",
       "extra_arguments": [
         "-vv",
         "--extra-vars",

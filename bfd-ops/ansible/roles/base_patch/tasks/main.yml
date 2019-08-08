@@ -1,45 +1,12 @@
 ---
-- name: "fix umask"
-  become_user: root
-  become: yes
-  vars:
-    ansible_ssh_pipelining: no
-  shell: |
-    echo '
-    # Use default RHEL umask setting
-    if ! shopt -q login_shell ; then
-        if [ $UID -gt 199 ] && [ "$(/usr/bin/id -gn)" = "$(/usr/bin/id -un)" ]; then
-            umask 002
-        else
-            umask 022
-        fi
-    fi
-    ' | sudo tee -a /etc/bashrc
-    echo '
-    # Use default RHEL umask setting
-    if [ $UID -gt 199 ] && [ "$(id -gn)" = "$(id -un)" ]; then
-        umask 002
-    else
-        umask 022
-    fi
-    ' | sudo tee -a /etc/profile
-  args:
-    executable: /bin/bash
-
-- name: "fix sudoers file"
-  become: yes
-  vars:
-    ansible_ssh_pipelining: no
-  import_tasks: fix_sudoers.yml
-
-- name: "disable boot-time yum update"
+- name: Disable boot-time yum update
   become: yes
   lineinfile:
     dest: /etc/cloud/cloud.cfg
     state: absent
     regexp: '^.*yum\s-y\supdate.*$'
 
-- name: "apply security patches"
+- name: Apply security patches
   become: yes
   shell: yum update-minimal --security -y
 

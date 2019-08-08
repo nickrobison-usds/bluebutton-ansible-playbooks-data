@@ -8,14 +8,16 @@
   become: true
   gather_facts: no
   vars_files:
-    - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
+    - host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
 
   tasks:
-    - include_role:
+    - import_role:
         name: rhel_prep
-    - include_role:
+    - import_role:
         name: base_patch
-    - include_role:
-        name: builds_apache_ccs
-    - include_role:
-        name: builds_jenkins_ccs
+    - import_role:
+        name: build_install_apache
+    - import_role:
+        name: install_jenkins
+    - import_role:
+        name: build_jenkins
