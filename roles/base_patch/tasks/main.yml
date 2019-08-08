@@ -32,7 +32,7 @@
     regexp: '^.*yum\s-y\supdate.*$'
 
 - name: "fix sudoers file"
-  import_tasks: ./fix_sudoers.yml
+  import_tasks: fix_sudoers.yml
 
 - name: "apply security patches"
   become: yes
