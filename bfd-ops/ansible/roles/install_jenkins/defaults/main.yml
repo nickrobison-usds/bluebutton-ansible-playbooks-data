@@ -88,7 +88,7 @@ jenkins_java_args_extra: ''
 
 # The base URL of the custom YUM/APT repo to be used (the portion that's shared
 # by the signing key and packages).
-jenkins_packages_url_base: 'https://jenkins-ci.org/redhat'
+jenkins_packages_url_base: 'https://jenkins-ci.org'
 
 # Set to `true` to add a `proxy: _none_` setting for the YUM repo.
 jenkins_packages_repo_yum_disable_proxy: true
