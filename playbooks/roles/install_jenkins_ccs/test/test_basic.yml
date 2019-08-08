@@ -1,0 +1,142 @@
+---
+##
+# Installs and verifies Jenkins on the container being used for the test case.
+##
+
+- hosts: docker_container
+  become: true
+  tasks:
+    # Prepare to install Java 8 (depending on OS, may not need to do anything).
+    - block:
+      - name: Add the webupd8team/java PPA for Ubuntu 14.04
+        apt_repository:
+          repo: 'ppa:webupd8team/java'
+      - name: Accept Oracle Java License
+        debconf:
+          name: oracle-java8-installer
+          question: "{{ item.question }}"
+          vtype: "{{ item.vtype }}"
+          value: "{{ item.value }}"
+        with_items:
+          - { question: 'shared/accepted-oracle-license-v1-1', vtype: 'select', value: 'true' }
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '14.04'
+    # Have to use Oracle's JDK on Ubuntu 14.04, as OpenJDK wasn't working
+    # correctly with ca-certificates-java (the 
+    # `/etc/ca-certificates/update.d/jks-keystore` script was hanging).
+    - import_role:
+        name: geerlingguy.java
+      vars:
+        java_packages: ['oracle-java8-installer']
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '14.04'
+    - import_role:
+        name: geerlingguy.java
+      vars:
+        java_packages: ['openjdk-8-jdk']
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '16.04'
+    - import_role:
+        name: geerlingguy.java
+      vars:
+        java_packages: ['java-1.8.0-openjdk']
+      when:
+        - ansible_os_family == 'RedHat'
+
+# Install Jenkins.
+- hosts: docker_container
+  tasks:
+    - import_role:
+        name: karlmdavis.jenkins2
+      vars:
+        # Just setting something here so we can verify it's working.
+        jenkins_home: /var/lib/jenkins-not-default
+
+        # This test user gets created below.
+        jenkins_admin_username: test
+        jenkins_admin_password: supersecret
+
+    # Ensure that Jenkins has restarted, if it needs to.
+    - meta: flush_handlers
+
+    # Configure security, so that we can verify that things still work with it.
+    - name: Configure Security
+      jenkins_script:
+        url: "{{ jenkins_url_local }}"
+        user: "{{ jenkins_dynamic_admin_username | default(omit) }}"
+        password: "{{ jenkins_dynamic_admin_password | default(omit) }}"
+        script: |
+          // These are the basic imports that Jenkins interactive script console
+          // automatically includes.
+          import jenkins.*;
+          import jenkins.model.*;
+          import hudson.*;
+          import hudson.model.*;
+
+          def securityRealm = new hudson.security.HudsonPrivateSecurityRealm(false)
+          if(!securityRealm.equals(Jenkins.instance.getSecurityRealm())) {
+            Jenkins.instance.setSecurityRealm(securityRealm)
+
+            def testUser = securityRealm.createAccount("test", "supersecret")
+            testUser.addProperty(new hudson.tasks.Mailer.UserProperty("foo@example.com"));
+            testUser.save()
+
+            Jenkins.instance.save()
+            println "Changed authentication."
+          }
+
+          def authorizationStrategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
+          if(!authorizationStrategy.equals(Jenkins.instance.getAuthorizationStrategy())) {
+            authorizationStrategy.setAllowAnonymousRead(false)
+            Jenkins.instance.setAuthorizationStrategy(authorizationStrategy)
+            Jenkins.instance.save()
+            println "Changed authorization."
+          }
+      register: shell_jenkins_security
+      changed_when: "(shell_jenkins_security | success) and 'Changed' not in shell_jenkins_security.output"
+
+# Verify that things worked as expected.
+- hosts: docker_container
+  tasks:
+    - name: Ensure Service 'jenkins' Is Running
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+      become: true
+    
+    - name: Grab Jenkins Web UI Content
+      # By default, Jenkins 2 is set to require auth, so the only page we can grab 
+      # without getting a 403 and redirect is the login page.
+      uri:
+        url: "http://localhost:8080/login"
+        return_content: true
+      register: jenkins_ui
+    
+    - name: Verify Jenkins Web UI Content
+      action: fail
+      when: "'Jenkins' not in jenkins_ui.content"
+
+    - name: Verify jenkins_script Works with Security
+      jenkins_script:
+        url: "{{ jenkins_url_local }}"
+        user: "{{ jenkins_dynamic_admin_username | default(omit) }}"
+        password: "{{ jenkins_dynamic_admin_password | default(omit) }}"
+        script: |
+          println "Hello World!"
+      register: script_test_1
+      changed_when: false
+      failed_when: "'Hello World!' not in script_test_1.output"
+
+    - name: Verify jenkins_script Works with Template Lookup
+      jenkins_script:
+        url: "{{ jenkins_url_local }}"
+        user: "{{ jenkins_dynamic_admin_username | default(omit) }}"
+        password: "{{ jenkins_dynamic_admin_password | default(omit) }}"
+        script: "{{ lookup('template', 'templates/jenkins_hello_world.groovy.j2') }}"
+      register: script_test_2
+      changed_when: false
+      failed_when: "'Hello World!' not in script_test_2.output"
