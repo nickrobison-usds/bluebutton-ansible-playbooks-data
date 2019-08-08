@@ -76,28 +76,28 @@
         println "Changed: external URL."
       }
 
-# // Set the Jenkins proxy config, if defined.
-      # def proxyName = "{{ jenkins_http_proxy_server | default('') | trim }}"
-      # def proxyPortText = "{{ jenkins_http_proxy_port | default('') | trim }}"
-      # def proxyNoProxyHosts = "{{ jenkins_http_proxy_no_proxy_hosts | default([]) | join('\n') }}"
-      # if (proxyName == "") {
-      #   if (Jenkins.instance.proxy != null) {
-      #     Jenkins.instance.proxy = null
-      #     ProxyConfiguration.getXmlFile().delete()
-      #     println "Changed: removed proxy configuration"
-      #   }
-      # } else if (
-      #     Jenkins.instance.proxy == null
-      #     || Jenkins.instance.proxy.name != proxyName
-      #     || "" + Jenkins.instance.proxy.port != proxyPortText
-      #     || Jenkins.instance.proxy.noProxyHost != proxyNoProxyHosts
-      # ) {
-      #   try { proxyPort = Integer.parseInt(proxyPortText) } catch(NumberFormatException e) { throw new IllegalArgumentException("Invalid proxy port: ${proxyPortText}", e) }
-      #   proxyDesired = new ProxyConfiguration(proxyName, proxyPort, null, null, proxyNoProxyHosts)
-      #   proxyDesired.save()
-      #   Jenkins.instance.proxy = ProxyConfiguration.load()
-      #   println "Changed: proxy configuration."
-      # }
+      // Set the Jenkins proxy config, if defined.
+      def proxyName = "{{ jenkins_http_proxy_server | default('') | trim }}"
+      def proxyPortText = "{{ jenkins_http_proxy_port | default('') | trim }}"
+      def proxyNoProxyHosts = "{{ jenkins_http_proxy_no_proxy_hosts | default([]) | join('\n') }}"
+      if (proxyName == "") {
+        if (Jenkins.instance.proxy != null) {
+          Jenkins.instance.proxy = null
+          ProxyConfiguration.getXmlFile().delete()
+          println "Changed: removed proxy configuration"
+        }
+      } else if (
+          Jenkins.instance.proxy == null
+          || Jenkins.instance.proxy.name != proxyName
+          || "" + Jenkins.instance.proxy.port != proxyPortText
+          || Jenkins.instance.proxy.noProxyHost != proxyNoProxyHosts
+      ) {
+        try { proxyPort = Integer.parseInt(proxyPortText) } catch(NumberFormatException e) { throw new IllegalArgumentException("Invalid proxy port: ${proxyPortText}", e) }
+        proxyDesired = new ProxyConfiguration(proxyName, proxyPort, null, null, proxyNoProxyHosts)
+        proxyDesired.save()
+        Jenkins.instance.proxy = ProxyConfiguration.load()
+        println "Changed: proxy configuration."
+      }
   register: shell_jenkins_config_misc
   changed_when: "(shell_jenkins_config_misc | success) and 'Changed' in shell_jenkins_config_misc.output"
 
