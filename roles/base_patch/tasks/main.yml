@@ -1,11 +1,8 @@
 ---
 # Ansible pipelining will not work if `requiretty` is forced for sudo.
-- name: Disable 'requiretty' for sudo
-  replace:
-    dest: /etc/sudoers
-    regexp: '^Defaults\s+requiretty'
-    replace: '# Defaults  requiretty'
-  become: true
+- name: "fix sudoers file"
+  remote_user: ec2-user
+  import_tasks: fix_sudoers.yml
 
 - name: "fix umask"
   become: yes
@@ -37,9 +34,6 @@
     dest: /etc/cloud/cloud.cfg
     state: absent
     regexp: '^.*yum\s-y\supdate.*$'
-
-- name: "fix sudoers file"
-  import_tasks: fix_sudoers.yml
 
 - name: "apply security patches"
   become: yes

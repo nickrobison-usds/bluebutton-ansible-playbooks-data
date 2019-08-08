@@ -1,15 +1,6 @@
 ---
 # rhel sets Default requiretty. We need to fix that for ansible to work
 
-
-- name: Copy sudoers file for safety
-  become: yes
-  command: "cp -f /etc/sudoers /etc/sudoers.tmp"
-
-- name: Create sudoers file backup
-  become: yes
-  command: "cp -f /etc/sudoers /etc/sudoers.${date}.bak"
-
 - name: "patch sudoers file"
   become: yes
   vars:
