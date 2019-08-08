@@ -12,7 +12,6 @@
         fi
     fi
     ' | sudo tee -a /etc/bashrc
-
     echo '
     # Use default RHEL umask setting
     if [ $UID -gt 199 ] && [ "$(id -gn)" = "$(id -un)" ]; then

@@ -28,7 +28,7 @@
   "provisioners": [{
       "type": "ansible",
       "playbook_file": "playbooks/build_jenkins_ccs.yml",
-      "extra_arguments": [ "-vv" ],
+      "extra_arguments": [ "-vvv" ],
       "ansible_env_vars": [
         "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'"
     ]
