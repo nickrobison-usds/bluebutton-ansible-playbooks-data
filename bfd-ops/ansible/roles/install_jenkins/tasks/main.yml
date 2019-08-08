@@ -11,6 +11,8 @@
     group: jenkins
     mode: u=rwx,g=rx,o=rx
   become: true
+  notify:
+    - "Restart Service 'jenkins'"
 
 # Fire any pending restart handlers now, as we need Jenkins to be running.
 # Otherwise, the config.xml file may not have been created yet.

@@ -82,23 +82,3 @@
       line: "JENKINS_ARGS=\"--prefix={{ jenkins_context_path }}\""
   notify:
     - "Restart Service 'jenkins'"
-
-- name: Output logs
-  command: tail -50 /var/log/jenkins/jenkins.log
-  register: logs
-  ignore_errors: no
-
-- name: showing logs
-  debug:
-    var: logs
-
-- name: checking service status
-  command: systemctl -l status "{{ item }}"
-  with_items:
-  - jenkins
-  register: result
-  ignore_errors: no
-
-- name: showing report
-  debug:
-    var: result
