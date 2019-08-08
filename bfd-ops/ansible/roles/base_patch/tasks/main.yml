@@ -16,7 +16,7 @@
 
 - name: Install ntp
   command: yum install ntp
-  become: true
+  become: yes
 
 - name: Add amazon ntp server to ntp.conf
   lineinfile:

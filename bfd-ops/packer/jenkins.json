@@ -27,7 +27,7 @@
   ],
   "provisioners": [{
       "type": "ansible",
-      "command": "ansible-playbook-wrapper",
+      "command": "./ansible-playbook-wrapper",
       "playbook_file": "jenkins.yml",
       "extra_arguments": [
         "-vv",
