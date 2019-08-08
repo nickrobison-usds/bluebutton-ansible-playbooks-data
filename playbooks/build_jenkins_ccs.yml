@@ -3,20 +3,20 @@
 # Configures the LSS zone's build server (e.g. Jenkins).
 ##
 - name: Configure Build Server
-  hosts: all
+  hosts: localhost
   vars_files:
     - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
 
   tasks:
 
     - name: Base Patch Gold Image
-      import_role:
+      include_role:
         name: ../roles/base_patch
 
     - name: Install and Configure Apache
-      import_role:
+      include_role:
         name: ../roles/builds_apache
 
     - name: Install and Configure Jenkins
-      import_role:
+      include_role:
         name: ../roles/builds_jenkins_ccs
