@@ -3,6 +3,8 @@
 - name: "fix sudoers file"
   remote_user: ec2-user
   import_tasks: fix_sudoers.yml
+  vars:
+    ansible_ssh_pipelining: false
 
 - name: "fix umask"
   become: yes
