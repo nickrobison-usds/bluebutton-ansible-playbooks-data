@@ -13,6 +13,15 @@
   register: jenkins_script_security
   changed_when: "(jenkins_script_security is success) and 'Changed' in jenkins_script_security.output"
 
+- name: Harden Jenkins
+  jenkins_script:
+    url: "{{ jenkins_url_local }}"
+    user: "{{ jenkins_dynamic_admin_username | default(omit) }}"
+    password: "{{ jenkins_dynamic_admin_password | default(omit) }}"
+    script: "{{ lookup('template', 'templates/harden_jenkins.groovy.j2') }}"
+  register: jenkins_script_file_provider
+  changed_when: "(jenkins_script_file_provider is success) and 'Changed' in jenkins_script_file_provider.output"
+
 - name: Configure File Provider Plugin
   jenkins_script:
     url: "{{ jenkins_url_local }}"

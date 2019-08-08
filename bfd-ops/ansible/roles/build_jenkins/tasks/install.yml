@@ -34,25 +34,18 @@
 
     # This Jenkins mirror is whitelisted in the LSS' proxy server.
     #jenkins_downloads_url_root: 'http://ftp-nyc.osuosl.org/pub/jenkins'
-    jenkins_packages_url_base: 'http://repo.r53.gditshared.services:81/7/jenkins'
+    jenkins_packages_url_base: 'https://pkg.jenkins.io/redhat/'
     jenkins_packages_repo_yum_disable_proxy: true
 
     # Specify the URL that users will use to access Jenkins (via the Apache
     # proxy).
     jenkins_url_external: "https://{{ vault_builds_server_name }}{{ jenkins_context_path }}"
 
-    # The Active Directory user that should be used when logging into Jenkins to run
-    # configuration scripts.
-    jenkins_admin_username: "{{ vault_jenkins_domain.bind_user_login }}"
-    jenkins_admin_password: "{{ vault_jenkins_domain.bind_user_password }}"
-
     jenkins_plugins_extra:
       # Provides config files to jobs, e.g. Maven settings.xml files.
       - config-file-provider
       # Adds support for GH build status and commit hook triggers.
       - github
-      # Adds support for Active Directory authentication and authorization.
-      - active-directory
 
     # The default 60s leads to not-infrequent timeout errors.
     jenkins_plugins_timeout: 180
