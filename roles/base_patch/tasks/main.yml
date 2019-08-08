@@ -1,13 +1,9 @@
 ---
-# Ansible pipelining will not work if `requiretty` is forced for sudo.
-- name: "fix sudoers file"
-  remote_user: ec2-user
-  import_tasks: fix_sudoers.yml
-  vars:
-    ansible_ssh_pipelining: false
-
 - name: "fix umask"
+  become_user: root
   become: yes
+  vars:
+    ansible_ssh_pipelining: no
   shell: |
     echo '
     # Use default RHEL umask setting
@@ -29,6 +25,12 @@
     ' | sudo tee -a /etc/profile
   args:
     executable: /bin/bash
+
+- name: "fix sudoers file"
+  become: yes
+  vars:
+    ansible_ssh_pipelining: no
+  import_tasks: fix_sudoers.yml
 
 - name: "disable boot-time yum update"
   become: yes
