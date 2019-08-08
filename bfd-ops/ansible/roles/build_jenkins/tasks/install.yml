@@ -55,8 +55,8 @@
     jenkins_plugins_update: true
 
     # Jenkins needs to have the proxy configured explicitly.
-    jenkins_http_proxy_server: "{{ vault_proxy_host }}"
-    jenkins_http_proxy_port: "{{ vault_proxy_port }}"
+    jenkins_http_proxy_server: ""
+    jenkins_http_proxy_port: ""
     jenkins_http_proxy_no_proxy_hosts: ['localhost']
 
 # Ensure that Jenkins has restarted, if it needs to.
