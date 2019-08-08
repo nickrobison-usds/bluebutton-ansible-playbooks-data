@@ -9,16 +9,7 @@
   vars_files:
     - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
 
-  tasks:
-
-    - name: Base Patch Gold Image
-      include_role:
-        name: ../roles/base_patch
-
-    - name: Install and Configure Apache
-      include_role:
-        name: ../roles/builds_apache
-
-    - name: Install and Configure Jenkins
-      include_role:
-        name: ../roles/builds_jenkins_ccs
+  roles:
+    - ../roles/base_patch
+    - ../roles/builds_apache
+    - ../roles/builds_jenkins_ccs
