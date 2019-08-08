@@ -5,7 +5,7 @@
 - name: Configure Build Server
   hosts: all
   vars_files:
-    - host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
+    - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
 
   tasks:
 
