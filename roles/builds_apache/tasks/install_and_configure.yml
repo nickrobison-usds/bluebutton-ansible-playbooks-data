@@ -82,24 +82,6 @@
     - path: /var/www/builds/logs
       mode: u=rwx,g=rx,o=rx
 
-- name: SELinux - Allow apache to modify files in /var/www/builds
-  sefcontext:
-    target: '/var/www(/.*)?'
-    setype: httpd_sys_content_t
-    state: present
-  become: true
-
-- name: SELinux - Allow apache to modify files in /var/www/builds
-  sefcontext:
-    target: '/var/www(/.*)?'
-    setype: httpd_sys_rw_content_t
-    state: present
-  become: true
-
-- name: SELinux - Apply new SELinux file context to filesystem
-  command: restorecon -irv /var/www
-  become: yes
-
 - name: Enable Required Modules
   copy:
     src: "{{ item }}"

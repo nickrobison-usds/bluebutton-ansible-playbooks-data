@@ -13,7 +13,7 @@
 
 - name: Create cert dir
   file:
-    path: /etc/pki/tls/cert/
+    path: /etc/pki/tls/certs/
     state: directory
 
 - name: Apache Self Sign SSL Key - Copy from Vault
@@ -29,7 +29,7 @@
 
 - name: Apache Self Sign SSL Cert - Copy from Files
   copy:
-    dest: "/etc/pki/tls/cert/{{ item.dest_name }}"
+    dest: "/etc/pki/tls/certs/{{ item.dest_name }}"
     content: "{{ item.content }}"
   register: copy_ssl_build_key
   become: true
@@ -51,7 +51,7 @@
   with_items:
     - path: /etc/pki/tls/private/builds.key
       mode: u=rw,g=,o=
-    - path: /etc/pki/tls/cert/builds.crt
+    - path: /etc/pki/tls/certs/builds.crt
       mode: u=rw,g=r,o=r
 
 - name: Disable Default Configuration Files
@@ -101,6 +101,24 @@
       mode: u=rwx,g=rx,o=rx
     - path: /var/www/builds/logs
       mode: u=rwx,g=rx,o=rx
+
+- name: SELinux - Allow apache to modify files in /var/www/builds
+  sefcontext:
+    target: '/var/www(/.*)?'
+    setype: httpd_sys_content_t
+    state: present
+  become: true
+
+- name: SELinux - Allow apache to modify files in /var/www/builds
+  sefcontext:
+    target: '/var/www(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+  become: true
+
+- name: SELinux - Apply new SELinux file context to filesystem
+  command: restorecon -irv /var/www
+  become: yes
 
 - name: Enable Required Modules
   copy:
