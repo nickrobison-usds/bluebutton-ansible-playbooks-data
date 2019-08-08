@@ -11,12 +11,27 @@
     state: present
   become: true
 
-# FIXME: Replace with a HealthAPT/GDIT CA-signed cert, once available.
-- name: Generate SSL Key and Self-Signed Certificate
-  command: openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/pki/tls/private/builds.key -out /etc/pki/tls/certs/builds.crt -subj "/CN={{ vault_builds_server_name }}" -days 1095
-  args:
-    creates: /etc/pki/tls/certs/builds.crt
+- name: Apache Self Sign SSL Key - Copy from Vault
+  copy:
+    dest: "/etc/pki/tls/private/{{ item.dest_name }}"
+    content: "{{ item.content }}"
+  register: copy_ssl_build_key
   become: true
+  no_log: true
+  with_items:
+    - dest_name: builds.key
+      content: "{{ vault_ssl_build_key_private }}"
+
+- name: Apache Self Sign SSL Cert - Copy from Files
+  copy:
+    dest: "/etc/pki/tls/cert/{{ item.dest_name }}"
+    content: "{{ item.content }}"
+  register: copy_ssl_build_key
+  become: true
+  no_log: true
+  with_items:
+    - dest_name: builds.crt
+      content: "{{ lookup('file', 'files/builds.bfd-mgmt.crt') }}"
   notify:
     - Reload Apache
 
