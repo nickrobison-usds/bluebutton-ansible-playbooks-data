@@ -3,7 +3,9 @@
 # Configures the LSS zone's build server (e.g. Jenkins).
 ##
 - name: Configure Build Server
-  hosts: localhost
+  hosts: all
+  remote_user: ec2-user
+  gather_facts: no
   vars_files:
     - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
 
