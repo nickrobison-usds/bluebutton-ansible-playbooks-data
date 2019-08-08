@@ -1,0 +1,21 @@
+---
+##
+# Configures the LSS zone's build server (e.g. Jenkins).
+##
+- name: Configure Build Server
+  hosts: all
+  user: ec2-user
+  become: true
+  gather_facts: no
+  vars_files:
+    - ../host_vars/builds.bfd-mgmt.cmscloud.local/vault.yml
+
+  tasks:
+    - include_role:
+        name: rhel_prep
+    - include_role:
+        name: base_patch
+    - include_role:
+        name: builds_apache_ccs
+    - include_role:
+        name: builds_jenkins_ccs
