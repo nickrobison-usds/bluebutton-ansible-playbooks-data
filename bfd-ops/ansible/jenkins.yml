@@ -20,6 +20,4 @@
     - import_role:
         name: build_install_apache
     - import_role:
-        name: install_jenkins
-    - import_role:
         name: build_jenkins

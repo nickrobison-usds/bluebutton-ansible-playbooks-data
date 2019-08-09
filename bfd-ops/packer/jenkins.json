@@ -14,7 +14,7 @@
       "source_ami": "{{user `source_ami`}}",
       "security_group_filter": {
         "filters": {
-          "tag:Name": "bfd-packer_sg"
+          "tag:Name": "bfd-mgmt-vpn-private"
         }
       },
       "ami_name": "bfd-jenkins-{{isotime \"20060102030405\"}}",

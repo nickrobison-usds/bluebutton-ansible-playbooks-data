@@ -25,6 +25,14 @@
   changed_when: false
   register: slurp_jenkins_config
 
+- name: Determine Active Security Settings
+  set_fact:
+    # Yes, I'm parsing XML with a regex, and yes that's bad. But it's almost
+    # certainly "good enough" in this instance, so.
+    jenkins_active_security_realm: "{{ slurp_jenkins_config.content | b64decode | regex_replace('\n', '') | regex_replace('.*<securityRealm class=\"([^\"]+)\".*', '\\1') }}"
+    # Note: this will be a string value; use the `| bool` filter on it if a boolean is needed.
+    jenkins_security_enabled: "{{ true if (slurp_jenkins_config.content | b64decode | regex_replace('\n', '') | regex_replace('.*<useSecurity>([^<].*)</useSecurity>.*', '\\1')) == 'true' else false }}"
+
 - name: Calculate API Connection Variables
   set_fact:
     # All communication with the Jenkins API will be done over localhost, for security.
