@@ -169,16 +169,6 @@
         Jenkins.instance.save()
       }
 
-      // Enable agent-master access control, as its strongly recommended.
-      // References:
-      // * <https://jenkins.io/redirect/security-144/>
-      // * <https://stackoverflow.com/a/41588568/1851299>
-      if (Jenkins.instance.injector.getInstance(jenkins.security.s2m.AdminWhitelistRule.class).getMasterKillSwitch()) {
-        Jenkins.instance.getInjector().getInstance(AdminWhitelistRule.class).setMasterKillSwitch(false)
-        Jenkins.instance.save()
-        println "Changed agent-master access control: now disabled."
-      }
-
       // Enable CSRF, as its strongly recommended.
       // Reference: <https://wiki.jenkins.io/display/JENKINS/CSRF+Protection>
       if (Jenkins.instance.getCrumbIssuer() == null ) {
@@ -187,7 +177,7 @@
         println "Changed CSRF: enabled."
       }
   register: shell_jenkins_security_recommendations
-  changed_when: "(shell_jenkins_security_recommendations | success) and 'Changed' in shell_jenkins_security_recommendations.output"
+  changed_when: "(shell_jenkins_security_recommendations is success) and 'Changed' in shell_jenkins_security_recommendations.output"
 
 #Fire any pending restart handlers now, or else the tests below here may not be valid.
 - meta: flush_handlers

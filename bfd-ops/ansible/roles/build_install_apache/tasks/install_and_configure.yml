@@ -115,6 +115,12 @@
   command: restorecon -irv /var/www
   become: yes
 
+- name: SELinux - Allow Apache to Proxy
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+
 - name: Enable Required Modules
   copy:
     src: "{{ item }}"
