@@ -11,6 +11,15 @@
     dest: /tmp/downloads
     checksum: sha512:https://www.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz.sha512
 
+- name: create Maven installation directory
+  become: yes
+  file:
+    state: directory
+    owner: root
+    group: root
+    mode: 'u=rwx,go=rx'
+    dest: /opt/maven
+
 - name: Install Maven
   unarchive:
     src: /tmp/downloads/apache-maven-3.6.1-bin.tar.gz
