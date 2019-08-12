@@ -7,7 +7,7 @@
 
 - name: Download Maven
   get_url:
-    url: wget http://apache-mirror.8birdsvideo.com/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
+    url: http://apache-mirror.8birdsvideo.com/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
     dest: /tmp/downloads
     checksum: sha512:https://www.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz.sha512
 
