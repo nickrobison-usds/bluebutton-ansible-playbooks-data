@@ -4,19 +4,17 @@
 ##
 - name: Gather EC2 Metadata
   ec2_metadata_facts:
-  become: yes
 
-- name: Attach EBS Volume
-  become: yes
-  become_user: root
+- name: EBS - Attach Volume
+  become: true
   ec2_vol:
     instance: "{{ ansible_ec2_instance_identity_document_instanceid }}"
     name: bfd-jenkins-data
-    device_name: /dev/nvme1n1
+    device_name: /dev/sdf
     region: "{{ ansible_ec2_placement_region }}"
   register: ec2_vol
 
-- name: mounting the filesystem
+- name: EBS - Mounting the filesystem
   become: yes
   mount:
     name: /var/lib/jenkins_home

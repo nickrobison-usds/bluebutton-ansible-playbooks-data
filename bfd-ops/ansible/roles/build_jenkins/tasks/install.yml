@@ -8,6 +8,7 @@
     name:
       # The `-devel` variant is the JDK (instead of just the JRE).
       - java-1.8.0-openjdk-devel
+      - git
   become: true
   notify:
     - "Restart Service 'jenkins'"

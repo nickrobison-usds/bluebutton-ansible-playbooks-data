@@ -14,9 +14,6 @@
 
 - name: Install boto
   yum:
-    name: "{{ item }}"
+    name: ['python-boto']
     state: present
-  with_items:
-    # Needed to use the `s3` module.
-    - python-boto
   become: true
