@@ -39,28 +39,6 @@
     update_cache: "{{ true if jenkins_release_update else false }}"
   become: true
 
-# - name: Configure Jenkins Launch Settings
-#   lineinfile:
-#     path: /etc/sysconfig/jenkins
-#     regexp: "{{ item.regexp }}"
-#     line: "{{ item.line }}"
-#     mode: u=rw,g=,o=r
-#   become: true
-#   with_items:
-#     - regexp: '^JENKINS_JAVA_OPTIONS='
-#       # Note: The setup wizard has to be disabled before Jenkins runs the first
-#       # time. Fortunately, the RHEL packages don't automatically start the
-#       # Jenkins service after install, so we have time to address this.
-#       line: "JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false -DsessionTimeout={{ jenkins_session_timeout }} {{ jenkins_java_args_extra }}\""
-#     - regexp: '^JENKINS_PORT='
-#       line: "JENKINS_PORT={{ jenkins_port }}"
-#     - regexp: '^JENKINS_HOME='
-#       line: "JENKINS_HOME=\"{{ jenkins_home }}\""
-#     - regexp: '^JENKINS_ARGS='
-#       line: "JENKINS_ARGS=\"--prefix={{ jenkins_context_path }}\""
-#   notify:
-#     - "Restart Service 'jenkins'"
-
 - name: Configure Jenkins Launch Settings
   lineinfile:
     path: /etc/sysconfig/jenkins

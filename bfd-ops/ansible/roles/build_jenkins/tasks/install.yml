@@ -13,6 +13,9 @@
   notify:
     - "Restart Service 'jenkins'"
 
+- name: Install Maven
+  import_role: maven
+
 - name: Install Jenkins
   import_role:
     name: install_jenkins
