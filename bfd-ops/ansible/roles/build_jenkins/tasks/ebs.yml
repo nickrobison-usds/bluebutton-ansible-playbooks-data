@@ -2,19 +2,18 @@
 ##
 # Mounts Jenkins Data EBS Volume
 ##
-
-- name: get instance id
-  uri:
-    url: http://169.254.169.254/latest/meta-data/instance-id
-    return_content: yes
-  register: aws_instance_id
+- name: Gather EC2 Metadata
+  ec2_metadata_facts:
+  become: yes
 
 - name: Attach EBS Volume
   become: yes
+  become_user: root
   ec2_vol:
-    instance: "{{ aws_instance_id.content }}"
+    instance: "{{ ansible_ec2_instance_identity_document_instanceid }}"
     name: bfd-jenkins-data
     device_name: /dev/nvme1n1
+    region: "{{ ansible_ec2_placement_region }}"
   register: ec2_vol
 
 - name: mounting the filesystem
