@@ -111,15 +111,16 @@
     state: present
   become: true
 
-- name: SELinux - Apply new SELinux file context to filesystem
-  command: restorecon -irv /var/www
-  become: yes
-
 - name: SELinux - Allow Apache to Proxy
   seboolean:
     name: httpd_can_network_connect
     state: yes
     persistent: yes
+  become: true
+
+- name: SELinux - Apply new SELinux file context to filesystem
+  command: restorecon -irv /var/www
+  become: yes
 
 - name: Enable Required Modules
   copy:

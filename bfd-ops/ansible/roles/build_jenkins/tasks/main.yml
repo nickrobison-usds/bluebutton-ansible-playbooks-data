@@ -1,5 +1,8 @@
 ---
 
+- name: Mount EBS
+  import_tasks: ebs.yml
+
 - name: Install Jenkins
   import_tasks: install.yml
 

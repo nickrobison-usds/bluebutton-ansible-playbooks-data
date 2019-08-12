@@ -5,9 +5,18 @@
   vars:
     ansible_ssh_pipelining: no
   import_tasks: fix_umask.yml
-  
+
 - name: Fix sudoers file
   become: yes
   vars:
     ansible_ssh_pipelining: no
   import_tasks: fix_sudoers.yml
+
+- name: Install boto
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    # Needed to use the `s3` module.
+    - python-boto
+  become: true

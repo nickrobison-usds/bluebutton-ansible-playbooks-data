@@ -15,7 +15,7 @@ jenkins_release_update: true
 
 # The directory that will be used as the home directory for the Jenkins service
 # account. Cannot be modified, due to limitations in the Jenkins installers.
-jenkins_home_default: '/var/lib/jenkins'
+jenkins_home_default: '/var/lib/jenkins_home'
 
 # The location that will be used to store the Jenkins configuration and data.
 jenkins_home: "{{ jenkins_home_default }}"
@@ -25,7 +25,7 @@ jenkins_port: 8080
 
 # The context path that Jenkins will be hosted at, e.g. '/foo' in
 # 'http://localhost:8080/foo'. Leave as '' to host at root path.
-jenkins_context_path: ''
+jenkins_context_path: '/jenkins'
 
 # The external URL that users will use to access Jenkins. Gets set in the
 # Jenkins config and used in emails, webhooks, etc.

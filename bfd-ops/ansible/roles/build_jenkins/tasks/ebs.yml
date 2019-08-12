@@ -1,0 +1,26 @@
+---
+##
+# Mounts Jenkins Data EBS Volume
+##
+
+- name: get instance id
+  uri:
+    url: http://169.254.169.254/latest/meta-data/instance-id
+    return_content: yes
+  register: aws_instance_id
+
+- name: Attach EBS Volume
+  become: yes
+  ec2_vol:
+    instance: "{{ aws_instance_id.content }}"
+    name: bfd-jenkins-data
+    device_name: /dev/nvme1n1
+  register: ec2_vol
+
+- name: mounting the filesystem
+  become: yes
+  mount:
+    name: /var/lib/jenkins_home
+    src: /dev/nvme1n1
+    fstype: ext4
+    state: mounted
